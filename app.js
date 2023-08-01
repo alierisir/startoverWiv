@@ -15,16 +15,31 @@ const container = document.getElementById('viewer-container');
 const viewer = new IfcViewerAPI({ container, backgroundColor: new Color(0xffffff) });
 
 // Create grid and axes
-viewer.grid.setGrid();
-viewer.axes.setAxes();
+//viewer.grid.setGrid();
+//viewer.axes.setAxes();
 
 //5.1 Base IFC Viewer
 const propsGUI = document.getElementById("ifc-property-menu-root");
 let selected=[]
+let preSelectActive=false
 let shadowActive=false
 let highlightActive=false
-const url="./samples/INWIT-PP30-000.IFC"
-loadIfc(url)
+let nameInfo=document.getElementById("name-info")
+let qtyInfo=document.getElementById("qty-info")
+const input = document.getElementById("file-input");
+
+input.addEventListener(
+  "change",
+
+  async (changed) => {
+    const file = changed.target.files[0];
+    const ifcURL = URL.createObjectURL(file);
+    loadIfc(ifcURL)
+  },
+
+  false
+);
+
 
 async function loadIfc(url) {
     const model = await viewer.IFC.loadIfcUrl(url);
@@ -35,7 +50,11 @@ async function loadIfc(url) {
 //5.2 Selection and Pre-Selection feature
 window.ondblclick = async () => {
     if (viewer.dimensions.active === true) viewer.dimensions.create()
-    else getIFCProps()
+    else pickSame()
+}
+
+window.onmousemove = async () => {
+    if (preSelectActive===true) viewer.IFC.selector.prePickIfcItem()
 }
 
 //5.3 IFC Properties
@@ -47,6 +66,46 @@ window.onkeydown = async (event) => {
     else if(event.key ==="s"||event.key==="S") toggleShadows();
     else if(event.key ==="Escape") unSelectClear();
     else if(event.key ==="h"||event.key==="H") toggleHighlight();
+    else if(event.key ==="m"||event.key==="M") pickSame()
+    else if(event.key ==="w"||event.key==="W") togglePreseclection();
+}
+
+function togglePreseclection(){
+    if (preSelectActive===false) {
+        preSelectActive=true     
+    }else if (preSelectActive===true){
+        preSelectActive=false
+        viewer.IFC.selector.unPrepickIfcItems()
+    }
+}
+
+
+async function pickSame(){
+    const origin = await viewer.IFC.selector.pickIfcItem();
+    if (!origin) return viewer.IFC.selector.unpickIfcItems();
+    else{
+        const { modelID, id } = origin;
+        const originProps = await viewer.IFC.getProperties(modelID, id)
+        const originName = originProps.Name.value;
+        const sameTypes = await viewer.IFC.getAllItemsOfType(modelID,originProps.type)
+        const sameName = await sameNameCheck(originName,sameTypes)
+        for (let i=0;i<sameName.length;i++){
+            selected.push(sameName[i])
+        }    
+        await viewer.IFC.selector.pickIfcItemsByID(modelID,sameName)
+        console.log(originName,":",sameName.length,"pcs")
+        nameInfo.textContent=`${originName}`
+        qtyInfo.textContent=`${sameName.length}pcs.`
+    }
+}
+
+async function sameNameCheck(name,arr){
+    filteredArr=[]
+    for (let i=0;i<arr.length;i++) {
+        let item=await viewer.IFC.getProperties(0,arr[i])
+        if(item.Name.value===name) filteredArr.push(arr[i])
+    }
+    return filteredArr
 }
 
 async function toggleHighlight(){
@@ -67,7 +126,7 @@ function unSelectClear(){
 }
 
 async function getIFCProps() {
-    const result = await viewer.IFC.selector.pickIfcItem();
+    const result = await viewer.IFC.selector.pickIfcItem(true);
         if (!result){
             viewer.IFC.selector.unpickIfcItems();
             removeAllChildren(propsGUI)

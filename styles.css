@@ -52,6 +52,7 @@ html, body {
     overflow-y: scroll;
     background-color: white;
     height: 100vh;
+    z-index: -1;
 }
 
 li ul {
@@ -137,3 +138,27 @@ ul, #myUL {
     border-radius: 4px;
     opacity: 0.9;
 }
+
+#file-input{
+    position: absolute;
+    left: 50vw;
+    z-index: 2;
+}
+
+#name-info{
+    color: blue;
+    margin: 0.5rem;
+}
+
+#qty-info{
+    color: red;
+    margin: 0.5rem;
+}
+
+#information{
+    display: flex;
+    position: absolute;
+    flex-direction: column;
+    font-size: 1.2rem;
+}
+

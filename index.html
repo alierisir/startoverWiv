@@ -20,21 +20,21 @@
     <div class="ifc-tree-menu">
         <ul id="myUL">
             <li id="tree-root">
-                <span class="caret">Beverages</span>
+                <span class="caret">Project</span>
                 <ul class="nested">
-                    <li>Water</li>
-                    <li>Coffee</li>
+                    <li>Site1</li>
+                    <li>Site2</li>
                     <li>
-                        <span class="caret">Tea</span>
+                        <span class="caret">Site3</span>
                         <ul class="nested">
-                            <li>Black Tea</li>
-                            <li>White Tea</li>
-                            <li><span class="caret">Green Tea</span>
+                            <li>Building1</li>
+                            <li>Building2</li>
+                            <li><span class="caret">Building3</span>
                                 <ul class="nested">
-                                    <li>Sencha</li>
-                                    <li>Gyokuro</li>
-                                    <li>Matcha</li>
-                                    <li>Pi Lo Chun</li>
+                                    <li>Floor1</li>
+                                    <li>Floor2</li>
+                                    <li>Floor3</li>
+                                    <li>Floor4</li>
                                 </ul>
                             </li>
                         </ul>
@@ -43,36 +43,8 @@
             </li>
         </ul>
     </div>
-    <div class="checkboxes">
-        <div>
-            <input checked="true" id="IFCWALLSTANDARDCASE" type="checkbox">
-            Walls
-        </div>
-        <div>
-            <input checked="true" id="IFCSLAB" type="checkbox">
-            Slabs
-        </div>
-        <div>
-            <input checked="true" id="IFCWINDOW" type="checkbox">
-            Windows
-        </div>
-        <div>
-            <input checked="true" id="IFCFURNISHINGELEMENT" type="checkbox">
-            Furniture
-        </div>
-        <div>
-            <input checked="true" id="IFCDOOR" type="checkbox">
-            Doors
-        </div>
-        <div>
-            <input checked="true" id="IFCMEMBER" type="checkbox">
-            Curtain wall structure
-        </div>
-        <div>
-            <input checked="true" id="IFCPLATE" type="checkbox">
-            Curtain wall plates
-        </div>
-    </div>
+    <input type="file" id="file-input" accept=".ifc, .ifcXML, .ifcZIP" />
+    <div id="information"><p id="name-info">default</p><p id="qty-info">0pcs.</p></div>
     <script src="bundle.js"></script>
 </body>
 </html>
